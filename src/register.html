@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="assets/flat-icon/flaticon.css">
   <link rel="stylesheet" href="temp/styles/styles.css">
 	<link rel="stylesheet" href="css/producerprofile.css">
+  <link rel="stylesheet" href="css/register.css">
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 <meta charset="utf-8">
@@ -43,13 +44,13 @@
 				<h3 style="margin-top: 50px;">Register</h3>
 				<div class="formclass1" style="width: 50%;margin: auto 25% auto 25%; ">
 					<label for="name">Name</label>
-				    <input type="text" id="name" name="name" placeholder="Enter Name">
+				    <input type="text" id="name" name="name" placeholder="Enter Name" class="inputrounded">
 
 				    <label for="address">Your Account Address</label>
-				    <input type="text" id="accountAddress" name="accountAddress" placeholder="Account Address" disabled>
+				    <input type="text" id="accountAddress" name="accountAddress" placeholder="Account Address" class="inputrounded" >
 
 					<label for="type">Register As</label>
-					<select id="accountType" name="accountType">
+					<select id="accountType" name="accountType" class="inputrounded">
 						<option value="NULL" disabled selected>Select an option</option>
 					   	<option value="Producer">Producer</option>
 					   	<option value="Retailer">Retailer</option>
@@ -58,7 +59,7 @@
               <option value="Government">Government</option>
 					</select>
 				</div>
-				<button type="submit" class="button1 btn-add"  onclick="addUser()">Register</button>
+				<button type="submit" class="button1 btn-add inputrounded"  onclick="addUser()">Register</button>
 			</div>
 		</div>
 	</div>
