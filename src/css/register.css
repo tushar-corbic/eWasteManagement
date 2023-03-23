@@ -28,3 +28,10 @@
     opacity: 0;
     transition: opacity 0.3s;
   }
+
+  .maring-button-right{ /* You Can Name it what you want*/
+    margin-right:16px;
+    }
+    .maring-button-left { /* You Can Name it what you want*/
+        margin-right:16px;
+        }
