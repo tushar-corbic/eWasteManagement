@@ -57,3 +57,10 @@ input[type=number], select {
   border-radius: 4px;
   cursor: pointer;
 }
+
+#productid ,#weightglass, #weightplastic, #weightnickel, #weightaluminium, #weightcopper, #weightmagnesium, #weightlead{
+  border-radius: 10px;
+}
+.inputrounded{
+  border-radius: 15px;
+}
