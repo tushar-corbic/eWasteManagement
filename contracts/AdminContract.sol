@@ -29,14 +29,13 @@ contract AdminContract{
     constructor() public{
         owner = msg.sender;
     }
-
     function addProducer(address _pAddress,string memory _name) public returns(bool){
-        if(!checkProducer(_pAddress)){
+        // if(!checkProducer(_pAddress)){
             producers.push(producer(_pAddress, true, _name,0));
             return true;
-        }else{
-            return false;
-        }
+        // }else{
+        //     return false;
+        // }
     }
 
     function addRetailer(address _rAddress,string memory _name) public returns(bool){

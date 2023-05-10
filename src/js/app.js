@@ -19,6 +19,7 @@ App = {
             App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
             web3 = new Web3(App.web3Provider);
         }
+        this.web3 = web3;
         return App.initAccount();
     },
 
@@ -59,6 +60,7 @@ App = {
     },
 
     makeTransaction:function (receiver,sender,amount) {
+        console.log(sender, receiver)
         amount=Number(amount);
         // console.log(amount);
         web3.eth.sendTransaction({
