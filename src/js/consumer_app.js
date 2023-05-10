@@ -1342,7 +1342,7 @@ ConApp={
         }
     },
 
-    buyProduct:function () {
+    buyProduct:async function () {
         var rAddress=$('#retailerSelect').val();
         var pType=$('#productType').val();
         var productname = $('#productlistSelect').val();

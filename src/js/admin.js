@@ -1153,7 +1153,7 @@ adminApp={
     },
 
 
-    displayData:function () {
+    displayData:async function () {
         var producerSelect = $('#producerSelect').val();
         if (producerSelect!=null) {
             adminApp.idList=[];
@@ -1308,7 +1308,7 @@ adminApp={
         // }
     },
 
-    assessment:function () {
+    assessment:async function () {
         var producerSelect = $('#producerSelect').val();
         var performanceType = $('#performanceType').val();
         var amount = $('#amount').val();
