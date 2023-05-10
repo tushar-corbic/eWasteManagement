@@ -1097,14 +1097,6 @@ App = {
         console.log(account)
          $('#loginAddress').html("Your account address: " + account);
             return App.initContract();
-        // web3.eth.getCoinbase(function(err, account){
-        //     if(err===null){
-        //         App.account = account;
-        //         console.log(App.account);
-        //         $('#loginAddress').html("Your account address: " + App.account);
-        //         return App.initContract();
-        //     }
-        // });
     },
 
     initContract: function(){

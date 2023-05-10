@@ -52,10 +52,8 @@ ConApp={
         productList.empty();
         for(let i=0;i<pCount;i++){
             var singleProduct = await nodeContract.methods.ProductList(i).call();
-            var low = singleProducer["addr"].toLowerCase();
-            // console.log(low, account)
-            // console.log(singleProducer)
-            console.log(account, low)
+            var low = singleProduct[2].toLowerCase();
+            
              if (account==low && singleProduct[5]==false && singleProduct[6]==false) {
                     var id=pid;
                     var name=singleProduct[3];
@@ -65,7 +63,6 @@ ConApp={
                 }
              pid++;
         }
-
         var rid=0;
         var returnList=$('#returnedProductList');
         returnList.empty();

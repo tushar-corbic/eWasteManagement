@@ -24,31 +24,6 @@ RecApp={
                         RecApp.render();
                     }
     },500)
-    
-        // $('.container').hide();
-        // web3.eth.getCoinbase(function(err, account){
-        //     if(err===null){
-        //         var acInstance;
-        //         App.account = account;
-        //         setTimeout(function(){
-        //             App.contracts.AdminContract.deployed().then(function(i){
-        //                 acInstance = i;
-        //                 acInstance.checkRetailer(App.account).then(function(exists){
-        //                     if (!exists) {
-        //                         alert("Please log in with a Retailer account to access this page");
-        //                     }else{
-        //                         acInstance.getRetailerName(App.account).then(function(accountName){
-        //                             $('.accountaddress').html("Welcome, " + accountName);
-        //                             $('.loader').hide();
-        //                             $('.container').show();
-        //                             RecApp.render();
-        //                         })
-        //                     }
-        //                 })
-        //             });
-        //         }, 500);
-        //     }
-        // });
     },
 
 
@@ -81,12 +56,7 @@ RecApp={
         const account = accounts[0];
         for(let i=0;i<pCount;i++){
             var singleProduct = await nodeContract.methods.ProductList(i).call();
-            // console.log(singleProducer[0])
-           
-            var low = singleProduct[0].toLowerCase();
-            // console.log(low,account, "-----")
-            // console.log(singleProduct, account)
-            // console.log()
+            var low = singleProduct[1].toLowerCase();
             if (account==low && singleProduct[5]==false && singleProduct[6]==false
                 && singleProduct[2]== "0x0000000000000000000000000000000000000000") {
                 var id=pid;
@@ -96,8 +66,6 @@ RecApp={
                 productList.append(productTemplate);
             }
             pid++;
-
-            
         }
 
         var rid=0;
@@ -106,8 +74,7 @@ RecApp={
 
         for(let i=0;i<pCount;i++){
             var singleProduct = await nodeContract.methods.ProductList(i).call();
-            var low = singleProducer[0].toLowerCase();
-            console.log(account , low, "-----")
+            var low = singleProduct[1].toLowerCase();
             if (account==low && singleProduct[5]==true && singleProduct[6]==false) {
                 if (flag == false) {
                     returnList.empty();
@@ -248,19 +215,21 @@ RecApp={
             const nodeContract = new web3.eth.Contract(Node_CONTRACT_ABI, Node_CONTRACT_ADDRESS)
             var count = await nodeContract.methods.getProductCount().call();
             if(count<productid){
-                    alert("Enter Valid Product Id");
+                    alert("Enter Valid Product Id---");
             }
             else{
-                var singleProduct = await nodeContract.methods.ProductList(productid)
-                if(account==singleProduct[1] && singleProduct[5]==false && singleProduct[6]==false && singleProduct[2]!="0x0000000000000000000000000000000000000000"){
+                var singleProduct = await nodeContract.methods.ProductList(productid).call()
+                var low = singleProduct[1].toLowerCase();
+                if(account==low && singleProduct[5]==false && singleProduct[6]==false && singleProduct[2]=="0x0000000000000000000000000000000000000000"){
                      var amount=(singleProduct[8]*percent)/100;
-                     var result = await nodeContract.methods.addReturnProductToRetailer(productid,singleProduct[2], percent).send({from: account, gas: 7920027})
+                    amount = Math.ceil(amount)
+                     var result = await nodeContract.methods.addReturnProductToRetailer(productid,singleProduct[2], percent).send({from: account,value:amount, gas: 7920027})
                      if (result){
                          alert("Transaction successful");
                          RecApp.render();
                      }
                 }else{
-                     alert("Enter Valid Product Id");
+                     alert("Enter Valid Product Id???");
                 }
                    
             }
