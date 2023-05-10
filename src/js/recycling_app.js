@@ -42,9 +42,11 @@ RecycApp={
 				var singleProduct = await nodeContract.methods.ProductList(productid).call();
 				console.log(singleProduct)
 
-				if(singleProduct[7]!='0'){
+				if(singleProduct[7]=="0"){
 					alert("Product already recycled");
-				}else if(singleProduct[5]==true || singleProduct[6]==true ){
+				}else if(singleProduct[5]==true && singleProduct[6]==true ){
+
+				// }else if(singleProduct[5]==true || singleProduct[6]==true ){
 					// I change dthe logic here
 					alert("Enter Valid Product ID");
 				}else{

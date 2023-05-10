@@ -239,9 +239,8 @@ async function loginRecycleUnit(){
         const checkRes = await adminContract.methods.checkRecycleUnit(accountname).call()
         exists = checkRes
          if(exists){
-            location.replace("src\RecyclingUnitProfile.html");
-        }
+            window.location="../RecyclingUnitProfile.html"        }
         else{
-            alert("Consumer Does not exists");
+            alert("Recycling Does not exists");
         }
 }
