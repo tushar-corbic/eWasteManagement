@@ -1,3 +1,4 @@
+
 $(document).ready(function(){
     $('.container').hide();
     $('.footer').hide();
@@ -58,32 +59,19 @@ async function addProducer(){
     var exists = false;
     var name = $('#name').val();
     var accountname = $("#accountAddress").val();
-    console.log(accountname,"------------");
+    console.log(accountname, name)
     const adminContract = new web3.eth.Contract(ADMIN_CONTRACT_ABI, ADMIN_CONTRACT_ADDRESS)
-    console.log(adminContract)
-        const checkRes = await adminContract.methods.checkProducer(accountname).call()
-        exists = checkRes
-        if(!exists){
-            await adminContract.methods.addProducer(accountname, name).send({from: accountname, gas: 7920027})
-        }else{
-            alert("Producer is already associated with this account");
-        }
+    
+    var checkRes = await adminContract.methods.checkProducer(accountname).call()
+    console.log(checkRes,"------")
+    exists = checkRes
+    if(!exists){
+        await adminContract.methods.addProducer(accountname, name).send({from: accountname, gas: 7920027})
+    }else{
+        alert("Producer is already associated with this account");
+    }
    
 
-    // App.contracts.AdminContract.deployed().then(function(i){
-    //     i.checkProducer(accountname).then(function(res){
-    //     // i.checkProducer(accountname).then(function(res){
-    //         exists = res;
-    //         return i;
-    //     }).then(function(i){
-    //         if (!exists) {
-    //             i.addProducer(accountname, name);
-    //             // i.addProducer(App.account, name);
-    //         }else{
-    //             alert("Producer is already associated with this account");
-    //         }
-    //     });
-    // });
 }
 async function loginProducer(){
     var exists = false;
