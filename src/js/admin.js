@@ -1068,63 +1068,94 @@ const Node_CONTRACT_ABI = [
 const Node_CONTRACT_ADDRESS = "0xc3203FF51bB7C40985e36c0Ff7ed6872a975c94e"
 adminApp={
     idList:[],
-	loadAddress:function () {
-        web3.eth.getCoinbase(function(err, account){
-            if(err===null){
-                var acInstance;
-                App.account = account;
-                setTimeout(function(){
-                    App.contracts.AdminContract.deployed().then(function(i){
-                        acInstance = i;
-                        return acInstance.owner();
-                    }).then(function (adminAddress) {
-                    	if(adminAddress==App.account){
-                    		$('.adminaddress').html("Account Address: " + adminAddress);
-                            adminApp.render();
-                    	}else{
-                            $('.container').hide();
-                    		alert("You are not admin");
-                    	}
-                    })
-                }, 500);
-            }
-        });
+	loadAddress:async function () {
+        const accounts = await window.ethereum.enable();
+        const account = accounts[0];
+
+        setTimeout(function(){
+        const adminContract = new web3.eth.Contract(ADMIN_CONTRACT_ABI, ADMIN_CONTRACT_ADDRESS)
+        const adminaddress =  adminContract.owner().call();
+        if(adminaddress==account){
+            $('.adminaddress').html("Account Address: " + adminaddress);
+            adminApp.render();
+        }else{
+            $('.container').hide();
+            alert("You are not admin");
+        }
+    }, 500);
+
+        // web3.eth.getCoinbase(function(err, account){
+        //     if(err===null){
+        //         var acInstance;
+        //         App.account = account;
+        //         setTimeout(function(){
+        //             App.contracts.AdminContract.deployed().then(function(i){
+        //                 acInstance = i;
+        //                 return acInstance.owner();
+        //             }).then(function (adminAddress) {
+        //             	if(adminAddress==App.account){
+        //             		$('.adminaddress').html("Account Address: " + adminAddress);
+        //                     adminApp.render();
+        //             	}else{
+        //                     $('.container').hide();
+        //             		alert("You are not admin");
+        //             	}
+        //             })
+        //         }, 500);
+        //     }
+        // });
     },
-    render:function () {
+    render:async function () {
 
         $('#chart').hide();
         $('.list-content').hide();
         $('.form-div2').hide();
-        var acInstance;
-        var pAddress;
+        const adminContract = new web3.eth.Contract(ADMIN_CONTRACT_ABI, ADMIN_CONTRACT_ADDRESS)
+        var producerCount = await adminContract.methods.getProducerCount().call();
+        var producerSelect = $('#producerSelect');
+        producerSelect.empty();
+        var producerOption = "<option value='" + null + "'disabled selected >" +"Select Producer" + "</ option>"
+        producerSelect.append(producerOption);
 
-        App.contracts.AdminContract.deployed().then(function (instance) {
-            acInstance=instance;
-            return acInstance.getProducerCount();
-        }).then(function (producerCount) {
-            var producerSelect = $('#producerSelect');
-            producerSelect.empty();
-            var producerOption = "<option value='" + null + "'disabled selected >" +"Select Producer" + "</ option>"
+        for (let i = 0; i < producerCount; i++) {
+            var singleProducer = await adminContract.methods.producers(i).call();
+            var name=singleProducer[2];
+            var address=singleProducer[0];
+            var producerOption = "<option value='" + address + "' >" + name + "</ option>"
             producerSelect.append(producerOption);
+        }
 
-            for (let i = 0; i < producerCount; i++) {
-                acInstance.producers(i).then(function (singleProducer) {
-                    var name=singleProducer[2];
-                    var address=singleProducer[0];
-                    var producerOption = "<option value='" + address + "' >" + name + "</ option>"
-                    producerSelect.append(producerOption);
-                });
-            }
-        });
+
+        // $('#chart').hide();
+        // $('.list-content').hide();
+        // $('.form-div2').hide();
+        // var acInstance;
+        // var pAddress;
+
+        // App.contracts.AdminContract.deployed().then(function (instance) {
+        //     acInstance=instance;
+        //     return acInstance.getProducerCount();
+        // }).then(function (producerCount) {
+        //     var producerSelect = $('#producerSelect');
+        //     producerSelect.empty();
+        //     var producerOption = "<option value='" + null + "'disabled selected >" +"Select Producer" + "</ option>"
+        //     producerSelect.append(producerOption);
+
+        //     for (let i = 0; i < producerCount; i++) {
+        //         acInstance.producers(i).then(function (singleProducer) {
+        //             var name=singleProducer[2];
+        //             var address=singleProducer[0];
+        //             var producerOption = "<option value='" + address + "' >" + name + "</ option>"
+        //             producerSelect.append(producerOption);
+        //         });
+        //     }
+        // });
     },
+
+
     displayData:function () {
-
-
-
         var producerSelect = $('#producerSelect').val();
-
         if (producerSelect!=null) {
-
             adminApp.idList=[];
             var pInstance;
             reusedPercentages=[0];
@@ -1135,52 +1166,40 @@ adminApp={
             var pid=0;
             var count=0;
             var sumValue=0;
+            const nodeContract = new web3.eth.Contract(Node_CONTRACT_ABI, Node_CONTRACT_ADDRESS)
+            var productCount = await nodeContract.methods.getProductCount().call();
+            var productList=$('#productList');
+            productList.empty();
+             for (var i = 0; i < productCount; i++) {
+                var singleProduct = await nodeContract.methods.ProductList(i).call();
+                if (singleProduct[5]==true && singleProduct[6]==true && singleProduct[10]==false
+                        && singleProduct[0]==producerSelect && singleProduct[7]!=0) {
+                        var id=pid;
+                        var name=singleProduct[3];
+                        var type=singleProduct[4];
+                        var rPercentage=singleProduct[7];
 
-            App.contracts.NodeContract.deployed().then(function (instance) {
-                pInstance=instance;
-                pInstance.getProductCount().then(function (productCount) {
-                var productList=$('#productList');
-                productList.empty();
+                        count++;
+                        sumValue=sumValue+parseInt(rPercentage);
+                        adminApp.idList.push(id);
 
-                for (var i = 0; i < productCount; i++) {
-                    pInstance.ProductList(i).then(function (singleProduct) {
-
-                        //for table
-                        if (singleProduct[5]==true && singleProduct[6]==true && singleProduct[10]==false
-                            && singleProduct[0]==producerSelect && singleProduct[7]!=0) {
-
-                            var id=pid;
-                            var name=singleProduct[3];
-                            var type=singleProduct[4];
-                            var rPercentage=singleProduct[7];
-
-                            count++;
-                            sumValue=sumValue+parseInt(rPercentage);
-                            adminApp.idList.push(id);
-
-                            var productTemplate = "<tr><td>" + id + "</td><td>" + name + "</td><td>" + type + "</td><td>" + rPercentage + "</td></tr>";
-                            productList.append(productTemplate);
-                        }
-
-                        //for graph
-                        if (singleProduct[5]==true && singleProduct[6]==true &&
-                            singleProduct[0]==producerSelect && singleProduct[7]!=0) {
-
-                            var rPercentage=singleProduct[7];
-                            reusedPercentages.push(parseInt(rPercentage));
-                        }
-
-                        pid++;
-                    });
+                        var productTemplate = "<tr><td>" + id + "</td><td>" + name + "</td><td>" + type + "</td><td>" + rPercentage + "</td></tr>";
+                        productList.append(productTemplate);
                 }
+                if (singleProduct[5]==true && singleProduct[6]==true &&
+                    singleProduct[0]==producerSelect && singleProduct[7]!=0) {
 
-                setTimeout(function () {
-                    var productTemplate = "<tr><td>"  + "</td><td>" + "Average Percentage" + "</td><td>" + "</td><td>" + (sumValue/count) + "</td></tr>";
-                    productList.append(productTemplate);
-                },200);
+                    var rPercentage=singleProduct[7];
+                    reusedPercentages.push(parseInt(rPercentage));
+                }
+                pid++;
 
-                })
-            })
+            }
+
+            setTimeout(function () {
+                var productTemplate = "<tr><td>"  + "</td><td>" + "Average Percentage" + "</td><td>" + "</td><td>" + (sumValue/count) + "</td></tr>";
+                productList.append(productTemplate);
+            },200);
 
             console.log("r percent",reusedPercentages);
 
@@ -1189,56 +1208,171 @@ adminApp={
                 var layout={
                     title:'Graph',
                     xaxis:{title:'Products',zeroline:true},
-                    yaxis:{title:'Reused Percentage'}
-                }
+                        yaxis:{title:'Reused Percentage'}
+                    }
 
 
-                Plotly.newPlot('chart',
-                            [{
-                                y:reusedPercentages,
-                                type:'line'
-                            }],
-                            layout);
-            },500);
+                    Plotly.newPlot('chart',
+                                [{
+                                    y:reusedPercentages,
+                                    type:'line'
+                                }],
+                                layout);
+                },500);
         }else{
-            alert("Select a producer");
+             alert("Select a producer");
         }
+
+
+        // var producerSelect = $('#producerSelect').val();
+
+        // if (producerSelect!=null) {
+
+        //     adminApp.idList=[];
+        //     var pInstance;
+        //     reusedPercentages=[0];
+        //     $('#chart').show();
+        //     $('.list-content').show();
+        //     $('.form-div2').show();
+
+        //     var pid=0;
+        //     var count=0;
+        //     var sumValue=0;
+
+        //     App.contracts.NodeContract.deployed().then(function (instance) {
+        //         pInstance=instance;
+        //         pInstance.getProductCount().then(function (productCount) {
+        //         var productList=$('#productList');
+        //         productList.empty();
+
+        //         for (var i = 0; i < productCount; i++) {
+        //             pInstance.ProductList(i).then(function (singleProduct) {
+
+        //                 //for table
+        //                 if (singleProduct[5]==true && singleProduct[6]==true && singleProduct[10]==false
+        //                     && singleProduct[0]==producerSelect && singleProduct[7]!=0) {
+
+        //                     var id=pid;
+        //                     var name=singleProduct[3];
+        //                     var type=singleProduct[4];
+        //                     var rPercentage=singleProduct[7];
+
+        //                     count++;
+        //                     sumValue=sumValue+parseInt(rPercentage);
+        //                     adminApp.idList.push(id);
+
+        //                     var productTemplate = "<tr><td>" + id + "</td><td>" + name + "</td><td>" + type + "</td><td>" + rPercentage + "</td></tr>";
+        //                     productList.append(productTemplate);
+        //                 }
+
+        //                 //for graph
+        //                 if (singleProduct[5]==true && singleProduct[6]==true &&
+        //                     singleProduct[0]==producerSelect && singleProduct[7]!=0) {
+
+        //                     var rPercentage=singleProduct[7];
+        //                     reusedPercentages.push(parseInt(rPercentage));
+        //                 }
+
+        //                 pid++;
+        //             });
+        //         }
+
+        //         setTimeout(function () {
+        //             var productTemplate = "<tr><td>"  + "</td><td>" + "Average Percentage" + "</td><td>" + "</td><td>" + (sumValue/count) + "</td></tr>";
+        //             productList.append(productTemplate);
+        //         },200);
+
+        //         })
+        //     })
+
+        //     console.log("r percent",reusedPercentages);
+
+        //     setTimeout(function () {
+        //         //for graph
+        //         var layout={
+        //             title:'Graph',
+        //             xaxis:{title:'Products',zeroline:true},
+        //             yaxis:{title:'Reused Percentage'}
+        //         }
+
+
+        //         Plotly.newPlot('chart',
+        //                     [{
+        //                         y:reusedPercentages,
+        //                         type:'line'
+        //                     }],
+        //                     layout);
+        //     },500);
+        // }else{
+        //     alert("Select a producer");
+        // }
     },
 
     assessment:function () {
         var producerSelect = $('#producerSelect').val();
         var performanceType = $('#performanceType').val();
         var amount = $('#amount').val();
-
         if (performanceType=="Incentive") {
-            App.contracts.NodeContract.deployed().then(function (instance) {
-                instance.sendIncentives(adminApp.idList,producerSelect,{
-                    from:App.account,
-                    value:web3.toWei(amount,'ether')
-                }).then(function (receipt) {
-                    if (receipt!=undefined) {
-                        alert("Transaction successful");
-                        adminApp.render();
-                    }
-                })
-            })
+            const nodeContract = new web3.eth.Contract(Node_CONTRACT_ABI, Node_CONTRACT_ADDRESS)
+            var result = nodeContract.methods.sendIncentives(adminApp.idList,producerSelect).send({from:account, gas: 7920027})
+            if(result!=undefined){
+                alert("Transaction successful");
+                adminApp.render();
+            }
         }else{
-            App.contracts.AdminContract.deployed().then(function (instance) {
-                instance.addPenalizeAmount(amount,producerSelect).then(function (receipt) {
-                    if (receipt!=undefined) {
-                        App.contracts.NodeContract.deployed().then(function (instance) {
-                            instance.penalizeProducer(adminApp.idList,producerSelect).then(function (receipt) {
-                                if (receipt!=undefined) {
-                                    alert("Transaction successful");
-                                    adminApp.render();
-                                }
-                            })
-                        })
-                    }
-                })
-            })
-
+            const adminContract = new web3.eth.Contract(ADMIN_CONTRACT_ABI, ADMIN_CONTRACT_ADDRESS)
+            var result = await adminContract.methods.addPenalizeAmount(amount,producerSelect).call();
+            if(result!=undefined){
+                const nodeContract = new web3.eth.Contract(Node_CONTRACT_ABI, Node_CONTRACT_ADDRESS)
+               var rr = await nodeContract.methods.penalizeProducer(adminApp.idList, producerSelect).call();
+               if(rr!=undefined){
+                 alert("Transaction successful");
+                 adminApp.render();
+               }
+            }
         }
+
+
+
+
+
+
+
+
+
+        // var producerSelect = $('#producerSelect').val();
+        // var performanceType = $('#performanceType').val();
+        // var amount = $('#amount').val();
+
+        // if (performanceType=="Incentive") {
+        //     App.contracts.NodeContract.deployed().then(function (instance) {
+        //         instance.sendIncentives(adminApp.idList,producerSelect,{
+        //             from:App.account,
+        //             value:web3.toWei(amount,'ether')
+        //         }).then(function (receipt) {
+        //             if (receipt!=undefined) {
+        //                 alert("Transaction successful");
+        //                 adminApp.render();
+        //             }
+        //         })
+        //     })
+        // }else{
+        //     App.contracts.AdminContract.deployed().then(function (instance) {
+        //         instance.addPenalizeAmount(amount,producerSelect).then(function (receipt) {
+        //             if (receipt!=undefined) {
+        //                 App.contracts.NodeContract.deployed().then(function (instance) {
+        //                     instance.penalizeProducer(adminApp.idList,producerSelect).then(function (receipt) {
+        //                         if (receipt!=undefined) {
+        //                             alert("Transaction successful");
+        //                             adminApp.render();
+        //                         }
+        //                     })
+        //                 })
+        //             }
+        //         })
+        //     })
+
+        // }
     }
 
 
