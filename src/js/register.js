@@ -59,10 +59,11 @@ async function addProducer(){
     var exists = false;
     var name = $('#name').val();
     var accountname = $("#accountAddress").val();
-    console.log(accountname, name)
+    // console.log(accountname, name)
+    console.log(ADMIN_CONTRACT_ABI,"-----")
     const adminContract = new web3.eth.Contract(ADMIN_CONTRACT_ABI, ADMIN_CONTRACT_ADDRESS)
     
-    var checkRes = await adminContract.methods.checkProducer(accountname).call()
+    const checkRes = await adminContract.methods.checkProducer(accountname).call()
     console.log(checkRes,"------")
     exists = checkRes
     if(!exists){

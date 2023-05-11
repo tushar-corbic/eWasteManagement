@@ -36,13 +36,15 @@ RecycApp={
 			count = parseInt(count)
 			productid =parseInt(productid)
 			if(count<productid){
-				// i change dthe logic here
                 alert("Enter Valid Product ID--");
 			}else{
 				var singleProduct = await nodeContract.methods.ProductList(productid).call();
 				console.log(singleProduct)
+				console.log(singleProduct[7])
 
-				if(singleProduct[7]=="0"){
+				if(singleProduct[7]!="0"){
+					// i changed the logic here
+					console.log("sdjfajl")
 					alert("Product already recycled");
 				}else if(singleProduct[5]==true && singleProduct[6]==true ){
 
@@ -80,6 +82,7 @@ RecycApp={
 							const accounts = await window.ethereum.enable();
         					const account = accounts[0];
 							var amount = await nodeContract.methods.getValue(productid, reusedpercentage).call();
+							amount = Math.ceil(amount/100)
 							var receipt = await nodeContract.methods.addPercentage(productid, reusedpercentage).send({from:account,value:amount,gas:7920027})
 							if(receipt!=undefined) {
 								alert("Transaction successful");

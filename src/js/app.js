@@ -543,9 +543,9 @@ const ADMIN_CONTRACT_ABI=[
       "type": "function"
     }
   ]
-const ADMIN_CONTRACT_ADDRESS ="0xb4f3FD4610D388289fAfe92a1FeF4d9a83faF4fe"
+const ADMIN_CONTRACT_ADDRESS ="0xe62a5bB9422d84D4b826CD32757127206fcB2A99"
 
-const Node_CONTRACT_ABI=[
+const Node_CONTRACT_ABI=   [
     {
       "inputs": [],
       "payable": false,
@@ -1065,7 +1065,7 @@ const Node_CONTRACT_ABI=[
       "type": "function"
     }
   ]
-const Node_CONTRACT_ADDRESS ="0x5737A3f72f0c10DCbA358aC784750257cEb454A2"
+const Node_CONTRACT_ADDRESS ="0xB8A01011f6B81Db6468e9Fd52a534D3972C47e47"
 
 App = {
     web3Provider: null,
