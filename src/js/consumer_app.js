@@ -155,8 +155,8 @@ ConApp={
                 alert("Enter Valid Quantity");
             }else{
                  const nodeContract = new web3.eth.Contract(Node_CONTRACT_ABI, Node_CONTRACT_ADDRESS)
-                 var amount = await nodeContract.methods.getCostForConsumer(rAddress,productname,pType,quantity);
-                //  console.log("amount", amount)
+                 var amount = await nodeContract.methods.getCostForConsumer(rAddress,productname,pType,quantity).call();
+                 
                 var proceed=confirm("Total Cost of product(s):"+amount+" ethers\nPress ok to continue");
                 if(proceed){
                     var receipt = await nodeContract.methods.soldToConsumer(rAddress,productname,pType,quantity).send({from:account, gas: 7920027})
