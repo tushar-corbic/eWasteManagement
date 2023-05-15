@@ -69,7 +69,7 @@ ConApp={
 
         for(let i=0;i<pCount;i++){
             var singleProduct = await nodeContract.methods.ProductList(i).call();
-            var low = singleProducer[2].toLowerCase();
+            var low = singleProduct[2].toLowerCase();
              if (account==low && singleProduct[5]==true) {
                     var id=rid;
                     var name=singleProduct[3];
@@ -140,6 +140,9 @@ ConApp={
             alert("Available Stock: "+ConApp.frequency[type]);
         }
     },
+
+   
+
 
     buyProduct:async function () {
         var rAddress=$('#retailerSelect').val();

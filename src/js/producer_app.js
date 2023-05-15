@@ -85,6 +85,28 @@ ProApp={
                 pid++;
              }
 
+            var rid=0;
+            var returnList=$('#returnedProductList');
+            var flag = false;
+             for(let i=0;i<pCount;i++){
+                var current_product =await  nodeContract.methods.ProductList(i).call();
+                var low = current_product[0].toLowerCase()
+                 if(account==low && current_product[5]==true && current_product[6]==true && current_product[7]==0 ){
+                    if (flag == false) {
+                        returnList.empty();
+                        $('#returnProductButton').show();
+                        flag = true;
+                    }
+                    var id=rid;
+                    var name=current_product[3];
+                    var type=current_product[4];
+                    var productTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + type + "</td></tr>";
+                    returnList.append(productTemplate);
+                }
+                rid++;
+
+             }
+
     }
     },
 
