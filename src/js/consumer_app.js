@@ -162,7 +162,7 @@ ConApp={
                  
                 var proceed=confirm("Total Cost of product(s):"+amount+" ethers\nPress ok to continue");
                 if(proceed){
-                    var receipt = await nodeContract.methods.soldToConsumer(rAddress,productname,pType,quantity).send({from:account, gas: 7920027})
+                    var receipt = await nodeContract.methods.soldToConsumer(rAddress,productname,pType,quantity).send({from:account,value:amount*1000000000000000000, gas: 7920027})
                     if(receipt!=undefined){
                         alert("Transaction successful");
                         ConApp.render();

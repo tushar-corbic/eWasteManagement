@@ -115,7 +115,7 @@ RecApp={
                 console.log("the amount", amount)
                 var proceed=confirm("Total Cost of product(s):"+amount+" ethers\nPress ok to continue");
                 if(proceed){
-                    var result =  await nodeContract.methods.soldToRetailer(pAddress,productname,pType,quantity).send({from: account,value:amount, gas: 7920027})
+                    var result =  await nodeContract.methods.soldToRetailer(pAddress,productname,pType,quantity).send({from: account,value:amount*1000000000000000000, gas: 7920027})
                     console.log(amount,"-------")
                     console.log(result)
                     if(result!=undefined){
@@ -223,7 +223,7 @@ RecApp={
                 if(account==low && singleProduct[5]==false && singleProduct[6]==false && singleProduct[2]=="0x0000000000000000000000000000000000000000"){
                      var amount=(singleProduct[8]*percent)/100;
                     amount = Math.ceil(amount)
-                     var result = await nodeContract.methods.addReturnProductToRetailer(productid,singleProduct[2], percent).send({from: account,value:amount, gas: 7920027})
+                     var result = await nodeContract.methods.addReturnProductToRetailer(productid,singleProduct[2], percent).send({from: account,value:amount*1000000000000000000, gas: 7920027})
                      if (result){
                          alert("Transaction successful");
                          RecApp.render();

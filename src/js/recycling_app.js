@@ -83,7 +83,7 @@ RecycApp={
         					const account = accounts[0];
 							var amount = await nodeContract.methods.getValue(productid, reusedpercentage).call();
 							amount = Math.ceil(amount/100)
-							var receipt = await nodeContract.methods.addPercentage(productid, reusedpercentage).send({from:account,value:amount,gas:7920027})
+							var receipt = await nodeContract.methods.addPercentage(productid, reusedpercentage).send({from:account,value:amount*10000000000000000,gas:7920027})
 							if(receipt!=undefined) {
 								alert("Transaction successful");
 							}

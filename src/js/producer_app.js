@@ -116,7 +116,7 @@ ProApp={
         var amount = await adminContract.methods.getPenalizeAmount().call()
         const accounts = await window.ethereum.enable();
         const account = accounts[0];
-        var receipt = await adminContract.methods.payPenalizeAmount().send({from: account, value:amount,gas: 7920027})
+        var receipt = await adminContract.methods.payPenalizeAmount().send({from: account, value:amount*1000000000000000000,gas: 7920027})
          if (receipt!=undefined) {
             alert("Transaction Successful");
             $('.container').show();
